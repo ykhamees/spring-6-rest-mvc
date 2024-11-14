@@ -10,13 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)
 public class BeerControllerTest {
@@ -33,10 +29,24 @@ public class BeerControllerTest {
     void getBeerById() throws Exception {
         Beer testBeer = beerServiceImpl.getBeers().getFirst();
 
-        given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+        given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
 
-        mockMvc.perform(get("/api/v1/beer/" + testBeer.getId())
-                                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(get("/api/v1/beer/" + testBeer.getId()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(testBeer.getId().toString()))
+                .andExpect(jsonPath("$.beerName").value(testBeer.getBeerName()));
+    }
+
+    @Test
+    void listBeers() throws Exception {
+        given(beerService.getBeers()).willReturn(beerServiceImpl.getBeers());
+
+        mockMvc.perform(get("/api/v1/beer")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(beerServiceImpl.getBeers().get(0).getId().toString()))
+                .andExpect(jsonPath("$[1].id").value(beerServiceImpl.getBeers().get(1).getId().toString()))
+                .andExpect(jsonPath("$.length()").value(beerServiceImpl.getBeers().size()));
     }
 }

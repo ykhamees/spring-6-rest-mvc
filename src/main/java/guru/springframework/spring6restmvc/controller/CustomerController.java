@@ -2,6 +2,7 @@ package guru.springframework.spring6restmvc.controller;
 
 import guru.springframework.spring6restmvc.model.Customer;
 import guru.springframework.spring6restmvc.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,13 +13,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@RestController("/api/v1/customer")
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
     private final CustomerService customerService;
-
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
 
     @PatchMapping("{customerId}")
     public ResponseEntity updateCustomerPatchById(@PathVariable("customerId") UUID customerId, Customer customer) {
