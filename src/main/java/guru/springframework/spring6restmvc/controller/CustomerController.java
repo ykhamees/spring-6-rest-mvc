@@ -15,29 +15,31 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
 public class CustomerController {
     private final CustomerService customerService;
 
-    @PatchMapping("{customerId}")
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
+
+    @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateCustomerPatchById(@PathVariable("customerId") UUID customerId, Customer customer) {
         customerService.patchCustomer(customerId, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("{customerId}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
         customerService.deleteById(customerId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("{customerId}")
+    @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, Customer customer) {
         customerService.updateCustomer(customerId, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = CUSTOMER_PATH, method = RequestMethod.POST)
     public ResponseEntity handlePost(Customer customer) {
         Customer savedCustomer = customerService.saveNewCustomer(customer);
         HttpHeaders headers = new HttpHeaders();
@@ -45,12 +47,12 @@ public class CustomerController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = CUSTOMER_PATH, method = RequestMethod.GET)
     public List<Customer> listCustomers() {
         return customerService.getCustomers();
     }
 
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
+    @RequestMapping(value = CUSTOMER_PATH_ID, method = RequestMethod.GET)
     public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("In CustomerController.getCustomerById");
         return customerService.getCustomerById(customerId);
