@@ -19,7 +19,7 @@ public class Customer {
     private UUID id;
 
     @Version
-    private String version;
+    private Integer version;
 
     private String customerName;
     private LocalDateTime createdDate;
