@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.entities;
 
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,7 +25,7 @@ public class Beer {
     private Integer version;
 
     private String beerName;
-    private String beerStyle;
+    private BeerStyle beerStyle;
     private String upc;
     private Integer quantityOnHand;
     private BigDecimal price;
